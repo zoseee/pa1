@@ -1,23 +1,26 @@
 #include <stdio.h>
 #include <pthread.h>
+#include <time.h>
 
-#define NUM_THREADS 8
-#define N 100000000
+#define NUM_THREADS 2
+#define N 10000000000LL
 
-int partialSums[NUM_THREADS] = {0};
+long long int partialSums[NUM_THREADS] = {0};
 
 void* addSum(void* arg) {
     int thread_id = *(int*)arg;
-    int chunk_size = N / NUM_THREADS;
-    int start = thread_id * chunk_size;
-    int end = (thread_id == NUM_THREADS - 1) ? N : start + chunk_size;
-    int partial_sum = 0;
+    long long int chunk_size = N / NUM_THREADS;
+    long long int start = thread_id * chunk_size;
+    long long int end = (thread_id == NUM_THREADS - 1) ? N : start + chunk_size;
+    long long int partial_sum = 0;
 
-    for (int i = start; i < end; i++) {
+    for (long long int i = start; i < end; i++) {
         partial_sum += i;
     }
 
     partialSums[thread_id] = partial_sum;
+
+    
 
     pthread_exit(NULL);
 }
@@ -25,6 +28,9 @@ void* addSum(void* arg) {
 int main() {
     pthread_t threads[NUM_THREADS];
     int thread_ids[NUM_THREADS];
+
+    struct timespec start_time, end_time;
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
 
     for (int i = 0; i < NUM_THREADS; i++) {
         thread_ids[i] = i;
@@ -35,12 +41,20 @@ int main() {
         pthread_join(threads[i], NULL);
     }
 
-    int total = 0;
+    long long int total = 0;
     for (int i = 0; i < NUM_THREADS; i++) {
         total += partialSums[i];
     }
 
-    printf("Total : %d\n", total);
+    clock_gettime(CLOCK_MONOTONIC, &end_time);
+
+    double execution_time = (end_time.tv_sec - start_time.tv_sec) + 
+                            (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+
+
+    printf("Total : %lld\n", total);
+    printf("Execution Time: %lf seconds\n", execution_time);
+
 
     return 0;
 }

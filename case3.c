@@ -4,10 +4,10 @@
 #include <sys/wait.h>
 
 #define NUM_TASKS 4
-#define N 10
+#define N 10000000000
 
 int main() {
-    int total = 0;
+    long long int total = 0;
     int pipefd[NUM_TASKS][2]; // Array of pipes for communication
 
     // Create pipes for communication between parent and child processes
@@ -29,7 +29,7 @@ int main() {
         if (pid == 0) { // Child process
             int start = task * (N / NUM_TASKS);
             int end = (task == NUM_TASKS - 1) ? N : (task + 1) * (N / NUM_TASKS);
-            int partial_sum = 0;
+            long long int partial_sum = 0;
 
             // Calculate the partial sum for this task
             for (int i = start; i < end; i++) {
@@ -37,7 +37,7 @@ int main() {
             }
 
             // Write the partial sum to the pipe
-            write(pipefd[task][1], &partial_sum, sizeof(int));
+            write(pipefd[task][1], &partial_sum, sizeof(long long int));
 
             // Close the write end of the pipe
             close(pipefd[task][1]);
@@ -52,8 +52,8 @@ int main() {
         wait(&status);
 
         // Read the partial sum from the pipe
-        int partial_sum;
-        read(pipefd[i][0], &partial_sum, sizeof(int));
+        long long int partial_sum;
+        read(pipefd[i][0], &partial_sum, sizeof(long long int));
 
         // Close the read end of the pipe
         close(pipefd[i][0]);
@@ -62,7 +62,7 @@ int main() {
         total += partial_sum;
     }
 
-    printf("Total : %d\n", total);
+    printf("Total : %lld\n", total);
 
     return 0;
 }
