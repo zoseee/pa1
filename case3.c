@@ -2,15 +2,20 @@
 #include <stdlib.h>
 #include <unistd.h>
 #include <sys/wait.h>
+#include <time.h>
 
 #define NUM_TASKS 4
-#define N 100000000
+#define N 1000000000
 
 int main() {
-    int total = 0;
-    int pipefd[NUM_TASKS][2]; // Array of pipes for communication
+    long long int total = 0;
+    int pipefd[NUM_TASKS][2]; //pipesssssssssssssssssssssssssssssssssssssssss
 
-    // Create pipes for communication between parent and child processes
+    struct timespec start_time, end_time;
+
+    clock_gettime(CLOCK_MONOTONIC, &start_time);
+
+    //pipes for parent and child
     for (int i = 0; i < NUM_TASKS; i++) {
         if (pipe(pipefd[i]) == -1) {
             perror("pipe");
@@ -26,43 +31,45 @@ int main() {
             exit(EXIT_FAILURE);
         }
 
-        if (pid == 0) { // Child process
-            int start = task * (N / NUM_TASKS);
-            int end = (task == NUM_TASKS - 1) ? N : (task + 1) * (N / NUM_TASKS);
-            int partial_sum = 0;
+        if (pid == 0) { //child
+            long long int start = task * (N / NUM_TASKS);
+            long long int end = (task == NUM_TASKS - 1) ? N : (task + 1) * (N / NUM_TASKS);
+            long long int partial_sum = 0;
 
-            // Calculate the partial sum for this task
+            //calc partial sum
             for (int i = start; i < end; i++) {
                 partial_sum += i;
             }
 
-            // Write the partial sum to the pipe
-            write(pipefd[task][1], &partial_sum, sizeof(int));
+            //write sum to pipe
+            write(pipefd[task][1], &partial_sum, sizeof(long long int));
 
-            // Close the write end of the pipe
+            //close write
             close(pipefd[task][1]);
 
             exit(EXIT_SUCCESS);
         }
     }
 
-    // Parent process
+    //parent
     for (int i = 0; i < NUM_TASKS; i++) {
         int status;
         wait(&status);
 
-        // Read the partial sum from the pipe
-        int partial_sum;
-        read(pipefd[i][0], &partial_sum, sizeof(int));
+        //read sum from pipe
+        long long int partial_sum;
+        read(pipefd[i][0], &partial_sum, sizeof(long long int));
 
-        // Close the read end of the pipe
+        //close read
         close(pipefd[i][0]);
 
-        // Accumulate the partial sum
+        //add up partial sum
         total += partial_sum;
     }
 
-    printf("Total : %d\n", total);
+    double time_taken = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
+
+    printf("Total : %lld\n", total);
 
     return 0;
 }
