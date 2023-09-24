@@ -3,11 +3,8 @@
 #include <time.h>
 
 #define NUM_THREADS 2
-<<<<<<< HEAD
 #define N 100000000
-=======
-#define N 10000000000LL
->>>>>>> 0a8ecfce85f7a731adbef61eb4fc84075915da85
+
 
 long long int partialSums[NUM_THREADS] = {0};
 
@@ -56,20 +53,12 @@ int main() {
 
     clock_gettime(CLOCK_MONOTONIC, &end_time);
 
-<<<<<<< HEAD
     double time_taken = (end_time.tv_sec - start_time.tv_sec) + (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 
     printf("Total : %lld\n", total);
     printf("Time taken for %d threads: %0.9f sec\n",NUM_THREADS, time_taken);
-=======
-    double execution_time = (end_time.tv_sec - start_time.tv_sec) + 
-                            (end_time.tv_nsec - start_time.tv_nsec) / 1e9;
 
 
-    printf("Total : %lld\n", total);
-    printf("Execution Time: %lf seconds\n", execution_time);
-
->>>>>>> 0a8ecfce85f7a731adbef61eb4fc84075915da85
 
     return 0;
 }
