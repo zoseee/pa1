@@ -17,12 +17,16 @@ int main() {
 
     time(&start);
     
+<<<<<<< HEAD
     printf("Total : %llu\n", addSum(N));
 
     time(&end);
 
     double time_taken = ((double)(end - start));
     printf("Time taken: %0.5f sec\n", time_taken);
+=======
+    printf("Total : %d\n", addSum(100000000));
+>>>>>>> 0751a3b2a41ce00e32cbe652de21c30d18631891
 
     return 0;
 }
