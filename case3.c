@@ -4,7 +4,7 @@
 #include <sys/wait.h>
 
 #define NUM_TASKS 4
-#define N 10
+#define N 100000000
 
 int main() {
     int total = 0;

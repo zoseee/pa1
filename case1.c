@@ -12,7 +12,7 @@ int addSum(int n) {
 
 int main() {
     
-    printf("Total : %d\n", addSum(10));
+    printf("Total : %d\n", addSum(100000000));
 
     return 0;
 }
